@@ -43,6 +43,7 @@ class AddUserDialog(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUserTypeDropdown()
+        setupDepartmentDropdown()
         setupButtons()
         if (user != null) {
             populateFields(user)
@@ -53,6 +54,12 @@ class AddUserDialog(
         val userTypes = resources.getStringArray(R.array.user_types)
         val adapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, userTypes)
         binding.actvUserType.setAdapter(adapter)
+    }
+
+    private fun setupDepartmentDropdown() {
+        val departments = resources.getStringArray(R.array.departments)
+        val adapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, departments)
+        binding.actvDepartment.setAdapter(adapter)
     }
 
     private fun setupButtons() {
@@ -76,7 +83,7 @@ class AddUserDialog(
             etName.setText(user.name)
             etEmail.setText(user.email)
             actvUserType.setText(user.userType, false)
-            etDepartment.setText(user.department)
+            actvDepartment.setText(user.department, false)
             etContactNumber.setText(user.contactNumber)
         }
     }
@@ -85,7 +92,7 @@ class AddUserDialog(
         val name = binding.etName.text.toString().trim()
         val email = binding.etEmail.text.toString().trim()
         val userType = binding.actvUserType.text.toString().trim()
-        val department = binding.etDepartment.text.toString().trim()
+        val department = binding.actvDepartment.text.toString().trim()
         val contactNumber = binding.etContactNumber.text.toString().trim()
 
         if (name.isEmpty()) {
@@ -104,7 +111,7 @@ class AddUserDialog(
         }
 
         if (department.isEmpty()) {
-            binding.etDepartment.error = getString(R.string.error_department_required)
+            binding.tilDepartment.error = getString(R.string.error_department_required)
             return false
         }
 
@@ -122,7 +129,7 @@ class AddUserDialog(
             name = binding.etName.text.toString().trim(),
             email = binding.etEmail.text.toString().trim(),
             userType = binding.actvUserType.text.toString().trim(),
-            department = binding.etDepartment.text.toString().trim(),
+            department = binding.actvDepartment.text.toString().trim(),
             contactNumber = binding.etContactNumber.text.toString().trim()
         )
 
@@ -144,7 +151,7 @@ class AddUserDialog(
             name = binding.etName.text.toString().trim(),
             email = binding.etEmail.text.toString().trim(),
             userType = binding.actvUserType.text.toString().trim(),
-            department = binding.etDepartment.text.toString().trim(),
+            department = binding.actvDepartment.text.toString().trim(),
             contactNumber = binding.etContactNumber.text.toString().trim()
         )
 

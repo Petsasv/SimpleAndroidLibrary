@@ -11,17 +11,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.adapters.BorrowedBooksAdapter
 import com.example.libraryapp.data.local.LibraryDatabase
 import com.example.libraryapp.data.local.entities.Book
+import com.example.libraryapp.data.repositories.FirebaseRepository
 import com.example.libraryapp.databinding.FragmentBorrowedBooksBinding
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import java.util.*
 
 class BorrowedBooksFragment : Fragment() {
     private var _binding: FragmentBorrowedBooksBinding? = null
     private val binding get() = _binding!!
     private lateinit var borrowedBooksAdapter: BorrowedBooksAdapter
     private lateinit var database: LibraryDatabase
+    private val firebaseRepository = FirebaseRepository()
     private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,19 +75,27 @@ class BorrowedBooksFragment : Fragment() {
                 val updatedBook = book.copy(status = "available")
                 database.bookDao().updateBook(updatedBook)
 
-                // Delete the BookLending record from Firestore
-                val querySnapshot = firestore.collection("bookLendings")
+                // Find the active lending record in Firestore
+                val lendingSnapshot = firestore.collection("bookLendings")
                     .whereEqualTo("bookId", book.bookId)
+                    .whereEqualTo("returnDate", null)
                     .get()
                     .await()
 
-                if (!querySnapshot.isEmpty) {
-                    for (document in querySnapshot.documents) {
-                        document.reference.delete().await()
-                    }
-                }
+                if (lendingSnapshot.documents.isNotEmpty()) {
+                    val lendingDoc = lendingSnapshot.documents[0]
+                    val lendingId = lendingDoc.id
 
-                Toast.makeText(requireContext(), "Book returned successfully", Toast.LENGTH_SHORT).show()
+                    // Delete the lending record
+                    firestore.collection("bookLendings")
+                        .document(lendingId)
+                        .delete()
+                        .await()
+
+                    Toast.makeText(requireContext(), "Book returned successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "No active lending record found", Toast.LENGTH_SHORT).show()
+                }
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Error returning book: ${e.message}", Toast.LENGTH_SHORT).show()
             }

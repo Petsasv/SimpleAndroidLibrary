@@ -18,6 +18,7 @@ import com.example.libraryapp.databinding.DialogBorrowBookBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class BorrowBookDialog(
     private val book: Book,
@@ -94,28 +95,21 @@ class BorrowBookDialog(
         val borrowerName = binding.etBorrowerName.text.toString().trim()
         val days = binding.etDays.text.toString().toInt()
 
-        // First, verify the user exists in Firestore
-        firestore.collection("users")
-            .whereEqualTo("name", borrowerName)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (documents.isEmpty) {
-                    Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
-                    return@addOnSuccessListener
-                }
+        borrowBook(borrowerName, days)
+    }
 
-                // User exists, proceed with borrowing
-                val userDoc = documents.documents[0]
-                val userId = userDoc.id
-
+    private fun borrowBook(borrowerName: String, daysToBorrow: Int) {
+        lifecycleScope.launch {
+            try {
                 // Calculate return date
                 val calendar = Calendar.getInstance()
-                calendar.add(Calendar.DAY_OF_YEAR, days)
+                calendar.add(Calendar.DAY_OF_YEAR, daysToBorrow)
                 val returnDate = calendar.time
 
-                // Create lending record
-                val bookLending = BookLending(
-                    id = UUID.randomUUID().toString(),
+                // Create a new lending record in Firestore
+                val lendingId = UUID.randomUUID().toString()
+                val lendingRecord = BookLending(
+                    id = lendingId,
                     userName = borrowerName,
                     bookId = book.bookId,
                     bookName = book.title,
@@ -123,38 +117,23 @@ class BorrowBookDialog(
                     returnDate = returnDate
                 )
 
-                // Update book status to borrowed
-                val updatedBook = book.copy(status = "borrowed")
-                android.util.Log.d("BorrowBookDialog", "Updating book status to borrowed: ${updatedBook}")
-
-                // Save to Firestore
+                // Add the lending record to Firestore
                 firestore.collection("bookLendings")
-                    .document(bookLending.id)
-                    .set(bookLending)
-                    .addOnSuccessListener {
-                        // Update local database
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            try {
-                                database.bookDao().updateBook(updatedBook)
-                                android.util.Log.d("BorrowBookDialog", "Book status updated in local database")
-                                Toast.makeText(requireContext(), "Book borrowed successfully", Toast.LENGTH_SHORT).show()
-                                onBorrowSuccess()
-                                dismiss()
-                            } catch (e: Exception) {
-                                android.util.Log.e("BorrowBookDialog", "Error updating local database: ${e.message}")
-                                Toast.makeText(requireContext(), "Error updating local database: ${e.message}", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        android.util.Log.e("BorrowBookDialog", "Error borrowing book: ${e.message}")
-                        Toast.makeText(requireContext(), "Error borrowing book: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
+                    .document(lendingId)
+                    .set(lendingRecord)
+                    .await()
+
+                // Update the book in local database - only status
+                val updatedBook = book.copy(status = "borrowed")
+                database.bookDao().updateBook(updatedBook)
+
+                Toast.makeText(requireContext(), getString(R.string.book_borrowed_successfully), Toast.LENGTH_SHORT).show()
+                onBorrowSuccess()
+                dismiss()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), getString(R.string.error_borrowing_book, e.message), Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener { e ->
-                android.util.Log.e("BorrowBookDialog", "Error verifying user: ${e.message}")
-                Toast.makeText(requireContext(), "Error verifying user: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+        }
     }
 
     override fun onDestroyView() {

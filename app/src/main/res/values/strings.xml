@@ -103,4 +103,22 @@
     <string name="error_adding_user">Error adding user: %1$s</string>
     <string name="error_creating_user">Error creating user: %1$s</string>
     <string name="error_borrowing_book">Error borrowing book: %1$s</string>
+    
+    <string-array name="departments">
+        <item>Computer Science</item>
+        <item>Electrical Engineering</item>
+        <item>Mechanical Engineering</item>
+        <item>Civil Engineering</item>
+        <item>Mathematics</item>
+        <item>Physics</item>
+        <item>Chemistry</item>
+        <item>Biology</item>
+        <item>Business Administration</item>
+        <item>Economics</item>
+        <item>Psychology</item>
+        <item>English Literature</item>
+        <item>History</item>
+        <item>Art and Design</item>
+        <item>Music</item>
+    </string-array>
 </resources>

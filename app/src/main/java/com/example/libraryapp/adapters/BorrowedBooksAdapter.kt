@@ -2,11 +2,13 @@ package com.example.libraryapp.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.libraryapp.data.local.entities.Book
 import com.example.libraryapp.databinding.ItemBorrowedBookBinding
+import com.example.libraryapp.ui.dialogs.ConfirmReturnDialog
 
 class BorrowedBooksAdapter(
     private val onReturnClick: (Book) -> Unit
@@ -34,11 +36,20 @@ class BorrowedBooksAdapter(
                 tvTitle.text = book.title
                 tvAuthor.text = book.author
                 tvStatus.text = "Borrowed"
-                tvStatus.setTextColor(binding.root.context.getColor(android.R.color.holo_red_dark))
+                tvStatus.setTextColor(root.context.getColor(android.R.color.holo_red_dark))
                 
                 btnReturn.setOnClickListener {
-                    onReturnClick(book)
+                    showReturnConfirmationDialog(book)
                 }
+            }
+        }
+
+        private fun showReturnConfirmationDialog(book: Book) {
+            val activity = binding.root.context as? FragmentActivity
+            activity?.let {
+                ConfirmReturnDialog {
+                    onReturnClick(book)
+                }.show(it.supportFragmentManager, "ConfirmReturnDialog")
             }
         }
     }

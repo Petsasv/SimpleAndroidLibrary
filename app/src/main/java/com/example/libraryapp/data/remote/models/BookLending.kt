@@ -8,5 +8,5 @@ data class BookLending(
     val bookId: Long = 0,  // ID of the book from Room database
     val bookName: String = "",  // Name of the book
     val borrowDate: Date = Date(),  // When the book was borrowed
-    val returnDate: Date? = null  // When the book was returned (null if not returned)
+    val returnDate: Date  // When the book is expected to be returned
 ) 
