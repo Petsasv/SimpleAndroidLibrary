@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.libraryapp.fragments.HomeFragment"
+        android:label="@string/library"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_books"
+        android:name="com.example.libraryapp.fragments.BooksFragment"
+        android:label="@string/books"
+        tools:layout="@layout/fragment_books">
+        <action
+            android:id="@+id/action_books_to_borrowed"
+            app:destination="@id/navigation_borrowed_books" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_borrowed_books"
+        android:name="com.example.libraryapp.fragments.BorrowedBooksFragment"
+        android:label="@string/borrowed_books"
+        tools:layout="@layout/fragment_borrowed_books" />
+
+    <fragment
+        android:id="@+id/navigation_users"
+        android:name="com.example.libraryapp.fragments.UsersFragment"
+        android:label="@string/users"
+        tools:layout="@layout/fragment_users" />
+
+    <fragment
+        android:id="@+id/navigation_stats"
+        android:name="com.example.libraryapp.fragments.StatsFragment"
+        android:label="@string/stats"
+        tools:layout="@layout/fragment_stats" />
+
+</navigation>

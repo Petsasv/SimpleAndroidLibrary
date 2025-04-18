@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Primary colors -->
+    <color name="primary">#6750A4</color>
+    <color name="primary_variant">#FF3700B3</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_container">#EADDFF</color>
+    <color name="on_primary_container">#21005D</color>
+
+    <!-- Secondary colors -->
+    <color name="secondary">#625B71</color>
+    <color name="secondary_variant">#FF018786</color>
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="secondary_container">#E8DEF8</color>
+    <color name="on_secondary_container">#1D192B</color>
+
+    <!-- Surface colors -->
+    <color name="surface">#FFFBFE</color>
+    <color name="on_surface">#1C1B1F</color>
+    <color name="surface_variant">#49454F</color>
+    <color name="on_surface_variant">#49454F</color>
+
+    <!-- Background colors -->
+    <color name="background">#FFFFFFFF</color>
+    <color name="on_background">#FF000000</color>
+
+    <!-- Error colors -->
+    <color name="error">#B3261E</color>
+    <color name="on_error">#FFFFFF</color>
+    <color name="error_container">#F9DEDC</color>
+    <color name="on_error_container">#410E0B</color>
+
+    <!-- Status colors -->
+    <color name="status_available">#4CAF50</color>
+    <color name="status_borrowed">#F44336</color>
+    <color name="status_color">#757575</color>
+</resources>

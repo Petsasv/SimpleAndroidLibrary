@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Info -->
+    <string name="app_name">Library</string>
+    <string name="library">Library</string>
+    
+    <!-- Navigation -->
+    <string name="books">Books</string>
+    <string name="users">Users</string>
+    <string name="stats">Statistics</string>
+    <string name="theme">Theme</string>
+    <string name="language">Language</string>
+    <string name="notifications">Notifications</string>
+    <string name="settings">Settings</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    
+    <!-- Language -->
+    <string name="select_language">Select Language</string>
+    <string name="english">English</string>
+    <string name="greek">Greek</string>
+    <string name="apply">Apply</string>
+    
+    <!-- Search -->
+    <string name="search">Search...</string>
+    <string name="search_books">Search books…</string>
+    
+    <!-- Book Status -->
+    <string name="available">Available</string>
+    <string name="borrowed">Borrowed</string>
+    <string name="no_books_available">No books available</string>
+    <string name="no_borrowed_books">No borrowed books</string>
+    <string name="borrowed_books">Borrowed Books</string>
+    
+    <!-- Book Fields -->
+    <string name="title" translatable="false">Title</string>
+    <string name="author" translatable="false">Author</string>
+    <string name="isbn" translatable="false">ISBN</string>
+    <string name="publication_year" translatable="false">Publication Year</string>
+    <string name="category" translatable="false">Category</string>
+    <string name="description" translatable="false">Description</string>
+    
+    <!-- Book Actions -->
+    <string name="add_book">Add New Book</string>
+    <string name="edit_book">Edit Book</string>
+    <string name="add">Add</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="select_publication_year">Select Publication Year</string>
+    
+    <!-- User Fields -->
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="user_type">User Type</string>
+    <string name="department">Department</string>
+    <string name="contact_number">Contact Number</string>
+    <string name="add_user">Add User</string>
+    
+    <!-- Borrowing -->
+    <string name="borrow_book">Borrow Book</string>
+    <string name="borrower_name">Borrower Name</string>
+    <string name="days_to_borrow">Days to Borrow</string>
+    <string name="total_price">Total Price: %1$.2f €</string>
+    <string name="borrow">Borrow</string>
+    <string name="return_book">Return Book</string>
+    <string name="return_book_action">Return</string>
+    
+    <!-- Action Buttons -->
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    
+    <!-- Error Messages -->
+    <string name="required_field" translatable="false">This field is required</string>
+    <string name="error_title_required">Title is required</string>
+    <string name="error_author_required">Author is required</string>
+    <string name="error_isbn_required">ISBN is required</string>
+    <string name="error_year_required">Publication year is required</string>
+    <string name="error_invalid_year">Invalid publication year</string>
+    <string name="error_invalid_quantity">Invalid quantity</string>
+    <string name="error_invalid_isbn">Invalid ISBN format</string>
+    <string name="error_invalid_category">Please select a category</string>
+    <string name="error_category_required">Category is required</string>
+    <string name="error_invalid_description">Description is required</string>
+    <string name="error_invalid_branch">error invalid branch</string>
+    <string name="error_quantity_required">error: quantity required</string>
+    <string name="error_name_required">Name is required</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_user_type_required">User type is required</string>
+    <string name="error_department_required">Department is required</string>
+    <string name="error_contact_number_required">Contact number is required</string>
+    <string name="error_borrower_name_required">Borrower name is required</string>
+    <string name="error_days_required">Please select number of days</string>
+    <string name="error_index_required">Please create the required index in Firebase Console. Click the link in the logs to create it.</string>
+    <string name="error_loading_books">Error loading borrowed books. Please try again.</string>
+    <string name="error_adding_book">Error adding book</string>
+    <string name="book_added_success">Book added successfully</string>
+    
+    <!-- Success Messages -->
+    <string name="user_added_successfully">User added successfully</string>
+    <string name="book_borrowed_successfully">Book borrowed successfully</string>
+    
+    <!-- Error Messages with Format -->
+    <string name="error_adding_user">Error adding user: %1$s</string>
+    <string name="error_creating_user">Error creating user: %1$s</string>
+    <string name="error_borrowing_book">Error borrowing book: %1$s</string>
+</resources>

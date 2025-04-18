@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Settings Group -->
+    <group android:id="@+id/group_settings">
+        <item
+            android:id="@+id/nav_theme"
+            android:icon="@drawable/ic_theme"
+            android:title="@string/theme"
+            app:showAsAction="never"
+            app:actionViewClass="androidx.appcompat.widget.AppCompatTextView"
+            android:iconTint="?android:attr/textColorPrimary" />
+
+        <item
+            android:id="@+id/nav_language"
+            android:icon="@drawable/ic_language"
+            android:title="@string/language"
+            app:showAsAction="never"
+            app:actionViewClass="androidx.appcompat.widget.AppCompatTextView"
+            android:iconTint="?android:attr/textColorPrimary" />
+
+        <item
+            android:id="@+id/nav_notifications"
+            android:icon="@drawable/ic_notifications"
+            android:title="@string/notifications"
+            app:showAsAction="never"
+            android:iconTint="?android:attr/textColorPrimary" />
+    </group>
+
+</menu> 

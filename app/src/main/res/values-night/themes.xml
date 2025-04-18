@@ -1,0 +1,37 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.LibraryApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary_variant</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <!-- Navigation bar color. -->
+        <item name="android:navigationBarColor">@color/background</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <!-- Material 3 specific attributes -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:colorForeground">@color/on_background</item>
+        <item name="android:colorError">@color/error</item>
+    </style>
+
+    <style name="Theme.LibraryApp" parent="Base.Theme.LibraryApp" />
+
+    <!-- Toolbar style -->
+    <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/surface</item>
+        <item name="android:elevation">4dp</item>
+        <item name="titleTextColor">@color/on_surface</item>
+        <item name="subtitleTextColor">@color/on_surface</item>
+    </style>
+</resources>

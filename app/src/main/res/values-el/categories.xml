@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="book_categories">
+        <item>Μυθιστόρημα</item>
+        <item>Μη Μυθιστόρημα</item>
+        <item>Επιστημονική Φαντασία</item>
+        <item>Φαντασία</item>
+        <item>Μυστηρίου</item>
+        <item>Θρίλερ</item>
+        <item>Ρομαντικό</item>
+        <item>Βιογραφία</item>
+        <item>Ιστορία</item>
+        <item>Επιστήμη</item>
+        <item>Τεχνολογία</item>
+        <item>Τέχνη</item>
+        <item>Φιλοσοφία</item>
+        <item>Ψυχολογία</item>
+        <item>Επιχειρήσεις</item>
+        <item>Αυτοβελτίωση</item>
+        <item>Ταξίδια</item>
+        <item>Μαγειρική</item>
+        <item>Ποίηση</item>
+        <item>Δράμα</item>
+    </string-array>
+</resources> 
