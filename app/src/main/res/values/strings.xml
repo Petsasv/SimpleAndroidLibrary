@@ -33,12 +33,16 @@
     <string name="borrowed_books">Borrowed Books</string>
     
     <!-- Book Fields -->
-    <string name="title" translatable="false">Title</string>
-    <string name="author" translatable="false">Author</string>
-    <string name="isbn" translatable="false">ISBN</string>
-    <string name="publication_year" translatable="false">Publication Year</string>
-    <string name="category" translatable="false">Category</string>
-    <string name="description" translatable="false">Description</string>
+    <string name="title">Title</string>
+    <string name="author">Author</string>
+    <string name="isbn">ISBN</string>
+    <string name="publication_year">Publication Year</string>
+    <string name="category">Category</string>
+    <string name="quantity">Quantity</string>
+    <string name="price">Price (€)</string>
+    <string name="branch">Branch</string>
+    <string name="description">Description</string>
+    <string name="status">Status</string>
     
     <!-- Book Actions -->
     <string name="add_book">Add New Book</string>
@@ -77,12 +81,16 @@
     <string name="error_year_required">Publication year is required</string>
     <string name="error_invalid_year">Invalid publication year</string>
     <string name="error_invalid_quantity">Invalid quantity</string>
+    <string name="error_invalid_price">Invalid price</string>
+    <string name="error_price_required">Price is required</string>
     <string name="error_invalid_isbn">Invalid ISBN format</string>
     <string name="error_invalid_category">Please select a category</string>
     <string name="error_category_required">Category is required</string>
     <string name="error_invalid_description">Description is required</string>
-    <string name="error_invalid_branch">error invalid branch</string>
-    <string name="error_quantity_required">error: quantity required</string>
+    <string name="error_invalid_branch">Please select a branch</string>
+    <string name="error_branch_required">Branch is required</string>
+    <string name="error_branch_not_found">Selected branch not found</string>
+    <string name="error_quantity_required">Quantity is required</string>
     <string name="error_name_required">Name is required</string>
     <string name="error_email_required">Email is required</string>
     <string name="error_user_type_required">User type is required</string>
@@ -93,17 +101,19 @@
     <string name="error_index_required">Please create the required index in Firebase Console. Click the link in the logs to create it.</string>
     <string name="error_loading_books">Error loading borrowed books. Please try again.</string>
     <string name="error_adding_book">Error adding book</string>
-    <string name="book_added_success">Book added successfully</string>
+    <string name="error_all_fields_required">All fields are required</string>
     
     <!-- Success Messages -->
     <string name="user_added_successfully">User added successfully</string>
     <string name="book_borrowed_successfully">Book borrowed successfully</string>
+    <string name="book_added_successfully">Book added successfully</string>
+    <string name="book_updated_successfully">Book updated successfully</string>
     
     <!-- Error Messages with Format -->
     <string name="error_adding_user">Error adding user: %1$s</string>
     <string name="error_creating_user">Error creating user: %1$s</string>
     <string name="error_borrowing_book">Error borrowing book: %1$s</string>
-    
+
     <string-array name="departments">
         <item>Computer Science</item>
         <item>Electrical Engineering</item>

@@ -85,9 +85,7 @@ class BooksFragment : Fragment() {
             "Author (A-Z)",
             "Author (Z-A)",
             "Category (A-Z)",
-            "Category (Z-A)",
-            "Publication Year (Newest)",
-            "Publication Year (Oldest)"
+            "Category (Z-A)"
         )
 
         MaterialAlertDialogBuilder(requireContext())
@@ -100,8 +98,6 @@ class BooksFragment : Fragment() {
                     3 -> SortOrder.AUTHOR_DESC
                     4 -> SortOrder.CATEGORY_ASC
                     5 -> SortOrder.CATEGORY_DESC
-                    6 -> SortOrder.DATE_DESC
-                    7 -> SortOrder.DATE_ASC
                     else -> SortOrder.TITLE_ASC
                 }
                 loadBooks()
@@ -119,8 +115,6 @@ class BooksFragment : Fragment() {
                     SortOrder.AUTHOR_DESC -> books.sortedByDescending { it.author }
                     SortOrder.CATEGORY_ASC -> books.sortedBy { it.category }
                     SortOrder.CATEGORY_DESC -> books.sortedByDescending { it.category }
-                    SortOrder.DATE_DESC -> books.sortedByDescending { it.publicationYear }
-                    SortOrder.DATE_ASC -> books.sortedBy { it.publicationYear }
                 }
                 bookAdapter.submitList(sortedBooks)
                 binding.emptyState.visibility = if (books.isEmpty()) View.VISIBLE else View.GONE
@@ -156,7 +150,6 @@ class BooksFragment : Fragment() {
     enum class SortOrder {
         TITLE_ASC, TITLE_DESC,
         AUTHOR_ASC, AUTHOR_DESC,
-        CATEGORY_ASC, CATEGORY_DESC,
-        DATE_ASC, DATE_DESC
+        CATEGORY_ASC, CATEGORY_DESC
     }
 }

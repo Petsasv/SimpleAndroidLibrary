@@ -19,7 +19,7 @@ import com.example.libraryapp.data.local.entities.BranchBook
         Book::class,
         BranchBook::class
     ],
-    version = 3,
+    version = 6,
     exportSchema = false
 )
 abstract class LibraryDatabase : RoomDatabase() {
@@ -103,6 +103,127 @@ abstract class LibraryDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Create a backup of the current table
+                database.execSQL("""
+                    CREATE TABLE books_backup AS 
+                    SELECT * FROM books
+                """)
+
+                // Create the new table with quantity instead of description
+                database.execSQL("""
+                    CREATE TABLE books_new (
+                        bookId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        title TEXT NOT NULL,
+                        author TEXT NOT NULL,
+                        isbn TEXT NOT NULL,
+                        publicationYear INTEGER NOT NULL,
+                        category TEXT NOT NULL,
+                        quantity INTEGER NOT NULL DEFAULT 1,
+                        status TEXT NOT NULL
+                    )
+                """)
+
+                // Copy data from backup to new table, setting quantity to 1 for existing books
+                database.execSQL("""
+                    INSERT INTO books_new (bookId, title, author, isbn, publicationYear, category, quantity, status)
+                    SELECT bookId, title, author, isbn, publicationYear, category, 1, status
+                    FROM books_backup
+                """)
+
+                // Drop the old table
+                database.execSQL("DROP TABLE books")
+
+                // Rename new table to original name
+                database.execSQL("ALTER TABLE books_new RENAME TO books")
+
+                // Drop the backup table
+                database.execSQL("DROP TABLE books_backup")
+            }
+        }
+
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Create a backup of the current table
+                database.execSQL("""
+                    CREATE TABLE books_backup AS 
+                    SELECT * FROM books
+                """)
+
+                // Create the new table with price field
+                database.execSQL("""
+                    CREATE TABLE books_new (
+                        bookId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        title TEXT NOT NULL,
+                        author TEXT NOT NULL,
+                        isbn TEXT NOT NULL,
+                        publicationYear INTEGER NOT NULL,
+                        category TEXT NOT NULL,
+                        quantity INTEGER NOT NULL DEFAULT 1,
+                        price REAL NOT NULL DEFAULT 0.0,
+                        status TEXT NOT NULL
+                    )
+                """)
+
+                // Copy data from backup to new table, setting price to 0.0 for existing books
+                database.execSQL("""
+                    INSERT INTO books_new (bookId, title, author, isbn, publicationYear, category, quantity, price, status)
+                    SELECT bookId, title, author, isbn, publicationYear, category, quantity, 0.0, status
+                    FROM books_backup
+                """)
+
+                // Drop the old table
+                database.execSQL("DROP TABLE books")
+
+                // Rename new table to original name
+                database.execSQL("ALTER TABLE books_new RENAME TO books")
+
+                // Drop the backup table
+                database.execSQL("DROP TABLE books_backup")
+            }
+        }
+
+        private val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Create a backup of the current table
+                database.execSQL("""
+                    CREATE TABLE books_backup AS 
+                    SELECT * FROM books
+                """)
+
+                // Create the new table without publicationYear
+                database.execSQL("""
+                    CREATE TABLE books_new (
+                        bookId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        title TEXT NOT NULL,
+                        author TEXT NOT NULL,
+                        isbn TEXT NOT NULL,
+                        category TEXT NOT NULL,
+                        quantity INTEGER NOT NULL DEFAULT 1,
+                        price REAL NOT NULL DEFAULT 0.0,
+                        status TEXT NOT NULL
+                    )
+                """)
+
+                // Copy data from backup to new table
+                database.execSQL("""
+                    INSERT INTO books_new (bookId, title, author, isbn, category, quantity, price, status)
+                    SELECT bookId, title, author, isbn, category, quantity, price, status
+                    FROM books_backup
+                """)
+
+                // Drop the old table
+                database.execSQL("DROP TABLE books")
+
+                // Rename new table to original name
+                database.execSQL("ALTER TABLE books_new RENAME TO books")
+
+                // Drop the backup table
+                database.execSQL("DROP TABLE books_backup")
+            }
+        }
+
         fun getDatabase(context: Context): LibraryDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -110,7 +231,13 @@ abstract class LibraryDatabase : RoomDatabase() {
                     LibraryDatabase::class.java,
                     "library_database"
                 )
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                .addMigrations(
+                    MIGRATION_1_2,
+                    MIGRATION_2_3,
+                    MIGRATION_3_4,
+                    MIGRATION_4_5,
+                    MIGRATION_5_6
+                )
                 .build()
                 INSTANCE = instance
                 // Initialize default data

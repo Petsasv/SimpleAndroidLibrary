@@ -47,6 +47,22 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/tvQuantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="14sp"
+                android:textColor="?attr/colorPrimary" />
+
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="14sp"
+                android:textColor="?attr/colorPrimary" />
+
+            <TextView
                 android:id="@+id/tvStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,10 +77,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/borrow"
-            app:icon="@drawable/ic_borrow"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_gravity="center_vertical" />
-
+            android:layout_gravity="center_vertical"
+            app:icon="@drawable/ic_borrow" />
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView> 

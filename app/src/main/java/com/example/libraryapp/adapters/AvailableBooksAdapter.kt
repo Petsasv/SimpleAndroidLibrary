@@ -33,6 +33,8 @@ class AvailableBooksAdapter(
             binding.apply {
                 tvTitle.text = book.title
                 tvAuthor.text = book.author
+                tvQuantity.text = "Quantity: ${book.quantity}"
+                tvPrice.text = String.format("Price: %.2f €", book.price)
                 tvStatus.text = "Available" // Always show as available since this adapter only shows available books
 
                 btnBorrow.setOnClickListener {
