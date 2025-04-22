@@ -59,6 +59,8 @@ class AvailableBooksFragment : Fragment() {
         BorrowBookDialog(book) {
             // Refresh the list when a book is borrowed
             loadBooks()
+            // Refresh stats
+            (parentFragment as? StatsFragment)?.refreshStats()
         }.show(childFragmentManager, "borrow_dialog")
     }
 

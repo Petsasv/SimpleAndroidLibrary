@@ -69,6 +69,8 @@ class BorrowedBooksFragment : Fragment() {
     }
 
     private fun returnBook(book: Book) {
+        // Capture fragment reference before coroutine
+        val fragment = this
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 // Update book status in local database
@@ -78,7 +80,6 @@ class BorrowedBooksFragment : Fragment() {
                 // Find the active lending record in Firestore
                 val lendingSnapshot = firestore.collection("bookLendings")
                     .whereEqualTo("bookId", book.bookId)
-                    .whereEqualTo("returnDate", null)
                     .get()
                     .await()
 
@@ -86,13 +87,21 @@ class BorrowedBooksFragment : Fragment() {
                     val lendingDoc = lendingSnapshot.documents[0]
                     val lendingId = lendingDoc.id
 
-                    // Delete the lending record
+                    // Update the lending record with return date instead of deleting it
                     firestore.collection("bookLendings")
                         .document(lendingId)
-                        .delete()
+                        .update(
+                            mapOf(
+                                "returnDate" to Date(),
+                                "isReturned" to true
+                            )
+                        )
                         .await()
 
                     Toast.makeText(requireContext(), "Book returned successfully", Toast.LENGTH_SHORT).show()
+                    
+                    // Refresh stats using the captured fragment reference
+                    StatsFragment.refreshStatsFromAnyFragment(fragment)
                 } else {
                     Toast.makeText(requireContext(), "No active lending record found", Toast.LENGTH_SHORT).show()
                 }

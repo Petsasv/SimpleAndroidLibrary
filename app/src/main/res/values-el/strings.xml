@@ -31,9 +31,12 @@
     <string name="error_year_required">Απαιτείται έτος έκδοσης</string>
     <string name="error_invalid_year">Μη έγκυρο έτος έκδοσης</string>
     <string name="error_invalid_quantity">Μη έγκυρη ποσότητα</string>
+    <string name="error_price_required">Παρακαλώ εισάγετε τιμή</string>
     <string name="error_invalid_isbn">Μη έγκυρη μορφή ISBN</string>
     <string name="error_invalid_category">Παρακαλώ επιλέξτε κατηγορία</string>
+    <string name="error_category_required">Κατηγορία απαιτείται</string>
     <string name="error_invalid_description">Απαιτείται περιγραφή</string>
+    <string name="status">Κατάσταση</string>
     <string name="add_book">Προσθήκη Νέου Βιβλίου</string>
     <string name="edit_book">Επεξεργασία Βιβλίου</string>
     <string name="add">Προσθήκη</string>
@@ -71,7 +74,35 @@
     <string name="error_days_required">Παρακαλώ επιλέξτε αριθμό ημερών</string>
     <string name="error_loading_books">Σφάλμα φόρτωσης δανεισμένων βιβλίων. Παρακαλώ δοκιμάστε ξανά.</string>
     <string name="error_adding_book">Σφάλμα προσθήκης βιβλίου</string>
-    <string name="book_added_success">Το βιβλίο προστέθηκε επιτυχώς</string>
+    <string name="book_added_successfully">Το βιβλίο προστέθηκε επιτυχώς</string>
     <string name="book_borrowed_successfully">Το βιβλίο δανείστηκε επιτυχώς</string>
     <string name="error_borrowing_book">Σφάλμα δανεισμού βιβλίου: %1$s</string>
+    <string name="quantity">Ποσότητα</string>
+    <string name="price">Τιμή (€)</string>
+    <string name="branch">Υποκατάστημα</string>
+    <string name="book_updated_successfully">Το βιβλίο ενημερώθηκε επιτυχώς</string>
+    <string name="error_all_fields_required">Όλα τα πεδία είναι υποχρεωτικά</string>
+    <string name="error_invalid_price">Μη έγκυρη τιμή</string>
+    <string name="error_invalid_branch">Παρακαλώ επιλέξτε υποκατάστημα</string>
+    <string name="error_branch_required">Απαιτείται υποκατάστημα</string>
+    <string name="error_branch_not_found">Το επιλεγμένο υποκατάστημα δεν βρέθηκε</string>
+    <string name="error_quantity_required">Απαιτείται ποσότητα</string>
+    <string name="error_index_required">Παρακαλώ δημιουργήστε τον απαιτούμενο δείκτη στο Firebase Console. Κάντε κλικ στον σύνδεσμο στα αρχεία καταγραφής για να τον δημιουργήσετε.</string>
+    <string-array name="departments">
+        <item>Πληροφορική</item>
+        <item>Ηλεκτρολόγων Μηχανικών</item>
+        <item>Μηχανολόγων Μηχανικών</item>
+        <item>Πολιτικών Μηχανικών</item>
+        <item>Μαθηματικά</item>
+        <item>Φυσική</item>
+        <item>Χημεία</item>
+        <item>Βιολογία</item>
+        <item>Διοίκηση Επιχειρήσεων</item>
+        <item>Οικονομικά</item>
+        <item>Ψυχολογία</item>
+        <item>Αγγλική Φιλολογία</item>
+        <item>Ιστορία</item>
+        <item>Τέχνη και Σχεδιασμός</item>
+        <item>Μουσική</item>
+    </string-array>
 </resources> 

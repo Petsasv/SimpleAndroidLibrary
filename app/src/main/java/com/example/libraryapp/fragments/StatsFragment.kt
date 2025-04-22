@@ -15,6 +15,8 @@ class StatsFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
+    private var usersStatsFragment: UsersStatsFragment? = null
+    private var booksStatsFragment: BooksStatsFragment? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,9 +33,11 @@ class StatsFragment : Fragment() {
         tabLayout = view.findViewById(R.id.tabLayout)
 
         // Create fragments for each tab
+        usersStatsFragment = UsersStatsFragment()
+        booksStatsFragment = BooksStatsFragment()
         val fragments = listOf(
-            UsersStatsFragment(),
-            BooksStatsFragment()
+            usersStatsFragment!!,
+            booksStatsFragment!!
         )
 
         // Set up ViewPager with adapter
@@ -47,5 +51,41 @@ class StatsFragment : Fragment() {
                 else -> null
             }
         }.attach()
+
+        // Load initial data
+        refreshStats()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh data when fragment becomes visible
+        refreshStats()
+    }
+
+    fun refreshStats() {
+        if (isAdded) {  // Check if fragment is still attached to activity
+            usersStatsFragment?.loadUserStatistics()
+            booksStatsFragment?.loadBookStatistics()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        usersStatsFragment = null
+        booksStatsFragment = null
+    }
+
+    companion object {
+        fun refreshStatsFromAnyFragment(fragment: Fragment) {
+            // Find the StatsFragment in the fragment hierarchy
+            var parent = fragment.parentFragment
+            while (parent != null) {
+                if (parent is StatsFragment) {
+                    parent.refreshStats()
+                    break
+                }
+                parent = parent.parentFragment
+            }
+        }
     }
 }

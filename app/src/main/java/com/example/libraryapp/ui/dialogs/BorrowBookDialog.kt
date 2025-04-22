@@ -2,6 +2,7 @@ package com.example.libraryapp.ui.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.example.libraryapp.data.local.LibraryDatabase
 import com.example.libraryapp.data.local.entities.Book
 import com.example.libraryapp.data.remote.models.BookLending
 import com.example.libraryapp.databinding.DialogBorrowBookBinding
+import com.example.libraryapp.fragments.StatsFragment
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 import kotlinx.coroutines.launch
@@ -114,8 +116,11 @@ class BorrowBookDialog(
                     bookId = book.bookId,
                     bookName = book.title,
                     borrowDate = Date(),
-                    returnDate = returnDate
+                    returnDate = returnDate,
+                    isReturned = false
                 )
+
+                Log.d("BorrowBookDialog", "Creating lending record: $lendingRecord")
 
                 // Add the lending record to Firestore
                 firestore.collection("bookLendings")
@@ -123,11 +128,17 @@ class BorrowBookDialog(
                     .set(lendingRecord)
                     .await()
 
+                Log.d("BorrowBookDialog", "Lending record created successfully")
+
                 // Update the book in local database - only status
                 val updatedBook = book.copy(status = "borrowed")
                 database.bookDao().updateBook(updatedBook)
 
                 Toast.makeText(requireContext(), getString(R.string.book_borrowed_successfully), Toast.LENGTH_SHORT).show()
+                
+                // Refresh stats
+                (parentFragment as? StatsFragment)?.refreshStats()
+                
                 onBorrowSuccess()
                 dismiss()
             } catch (e: Exception) {

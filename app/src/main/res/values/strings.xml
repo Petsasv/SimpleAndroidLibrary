@@ -74,7 +74,7 @@
     <string name="delete">Delete</string>
     
     <!-- Error Messages -->
-    <string name="required_field" translatable="false">This field is required</string>
+    <string name="required_field">This field is required</string>
     <string name="error_title_required">Title is required</string>
     <string name="error_author_required">Author is required</string>
     <string name="error_isbn_required">ISBN is required</string>

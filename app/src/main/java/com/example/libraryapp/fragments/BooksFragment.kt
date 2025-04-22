@@ -136,9 +136,13 @@ class BooksFragment : Fragment() {
     }
 
     private fun showBorrowBookDialog(book: Book) {
+        // Capture fragment reference
+        val fragment = this
         BorrowBookDialog(book) {
             // Refresh the book list when a book is borrowed
             loadBooks()
+            // Refresh stats using the captured fragment reference
+            StatsFragment.refreshStatsFromAnyFragment(fragment)
         }.show(childFragmentManager, "BorrowBookDialog")
     }
 
