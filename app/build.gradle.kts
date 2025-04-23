@@ -57,4 +57,7 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
 }

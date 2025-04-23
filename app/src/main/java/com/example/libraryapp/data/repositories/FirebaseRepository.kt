@@ -26,10 +26,10 @@ class FirebaseRepository {
             }
 
             // Verify it's the correct book and user
-            val recordBookId = docSnapshot.getString("bookId")
-            val recordUserId = docSnapshot.getString("userId")
+            val recordBookId = docSnapshot.getLong("bookId")?.toString()
+            val recordUserName = docSnapshot.getString("userName")
             
-            if (recordBookId != bookId || recordUserId != userId) {
+            if (recordBookId != bookId || recordUserName != userId) {
                 Log.e(TAG, "Lending record $lendingId does not match the provided book and user")
                 return@withContext Result.failure(Exception("Lending record does not match"))
             }
@@ -37,7 +37,7 @@ class FirebaseRepository {
             // Update the lending record to mark it as returned
             lendingRef.update(
                 mapOf(
-                    "returned" to true,
+                    "isReturned" to true,
                     "returnDate" to FieldValue.serverTimestamp()
                 )
             ).await()

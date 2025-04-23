@@ -69,6 +69,12 @@ class StatsFragment : Fragment() {
         }
     }
 
+    fun refreshBooksStats() {
+        if (isAdded) {
+            booksStatsFragment?.loadBookStatistics()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         usersStatsFragment = null

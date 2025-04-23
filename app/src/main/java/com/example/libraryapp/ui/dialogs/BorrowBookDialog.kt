@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LifecycleOwner
@@ -31,6 +32,7 @@ class BorrowBookDialog(
     private val binding get() = _binding!!
     private val firestore = FirebaseFirestore.getInstance()
     private lateinit var database: LibraryDatabase
+    private val TAG = "BorrowBookDialog"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +57,42 @@ class BorrowBookDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupUserSearch()
         setupButtons()
+    }
+
+    private fun setupUserSearch() {
+        val autoCompleteTextView = binding.etBorrowerName
+        val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
+        autoCompleteTextView.setAdapter(adapter)
+
+        // Load users from Firestore
+        lifecycleScope.launch {
+            try {
+                val usersSnapshot = firestore.collection("users")
+                    .get()
+                    .await()
+
+                val userNames = usersSnapshot.documents
+                    .mapNotNull { it.getString("name") }
+                    .sorted()
+
+                adapter.clear()
+                adapter.addAll(userNames)
+                adapter.notifyDataSetChanged()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error loading users: ${e.message}", e)
+                Toast.makeText(requireContext(), "Error loading users: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Filter users as user types
+        autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
+            val selectedUser = adapter.getItem(position)
+            if (selectedUser != null) {
+                autoCompleteTextView.setText(selectedUser)
+            }
+        }
     }
 
     private fun setupButtons() {
@@ -75,18 +112,18 @@ class BorrowBookDialog(
         val days = binding.etDays.text.toString()
 
         if (borrowerName.isEmpty()) {
-            binding.etBorrowerName.error = getString(R.string.error_borrower_name_required)
+            binding.tilBorrowerName.error = getString(R.string.error_borrower_name_required)
             return false
         }
 
         if (days.isEmpty()) {
-            binding.etDays.error = getString(R.string.error_days_required)
+            binding.tilDays.error = getString(R.string.error_days_required)
             return false
         }
 
         val daysInt = days.toIntOrNull()
         if (daysInt == null || daysInt < 1) {
-            binding.etDays.error = getString(R.string.error_days_required)
+            binding.tilDays.error = getString(R.string.error_days_required)
             return false
         }
 
@@ -103,6 +140,17 @@ class BorrowBookDialog(
     private fun borrowBook(borrowerName: String, daysToBorrow: Int) {
         lifecycleScope.launch {
             try {
+                // Verify user exists
+                val userSnapshot = firestore.collection("users")
+                    .whereEqualTo("name", borrowerName)
+                    .get()
+                    .await()
+
+                if (userSnapshot.isEmpty) {
+                    Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
                 // Calculate return date
                 val calendar = Calendar.getInstance()
                 calendar.add(Calendar.DAY_OF_YEAR, daysToBorrow)
@@ -110,25 +158,22 @@ class BorrowBookDialog(
 
                 // Create a new lending record in Firestore
                 val lendingId = UUID.randomUUID().toString()
-                val lendingRecord = BookLending(
-                    id = lendingId,
-                    userName = borrowerName,
-                    bookId = book.bookId,
-                    bookName = book.title,
-                    borrowDate = Date(),
-                    returnDate = returnDate,
-                    isReturned = false
-                )
-
-                Log.d("BorrowBookDialog", "Creating lending record: $lendingRecord")
-
-                // Add the lending record to Firestore
+                
+                // Add the lending record to Firestore with explicit field names
                 firestore.collection("bookLendings")
                     .document(lendingId)
-                    .set(lendingRecord)
+                    .set(mapOf(
+                        "id" to lendingId,
+                        "userName" to borrowerName,
+                        "bookId" to book.bookId,
+                        "bookName" to book.title,
+                        "borrowDate" to Date(),
+                        "returnDate" to returnDate,
+                        "isReturned" to false
+                    ))
                     .await()
 
-                Log.d("BorrowBookDialog", "Lending record created successfully")
+                Log.d(TAG, "Lending record created successfully")
 
                 // Update the book in local database - only status
                 val updatedBook = book.copy(status = "borrowed")

@@ -66,6 +66,7 @@
     <string name="days_to_borrow">Days to Borrow</string>
     <string name="total_price">Total Price: %1$.2f €</string>
     <string name="borrow">Borrow</string>
+    <string name="borrow_book_action">Borrow</string>
     <string name="return_book">Return Book</string>
     <string name="return_book_action">Return</string>
     

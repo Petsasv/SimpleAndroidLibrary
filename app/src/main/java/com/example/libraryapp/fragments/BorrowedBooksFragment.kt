@@ -80,28 +80,33 @@ class BorrowedBooksFragment : Fragment() {
                 // Find the active lending record in Firestore
                 val lendingSnapshot = firestore.collection("bookLendings")
                     .whereEqualTo("bookId", book.bookId)
+                    .whereEqualTo("isReturned", false)  // Only get non-returned records
                     .get()
                     .await()
 
                 if (lendingSnapshot.documents.isNotEmpty()) {
                     val lendingDoc = lendingSnapshot.documents[0]
                     val lendingId = lendingDoc.id
+                    val userName = lendingDoc.getString("userName") ?: "Unknown User"
 
-                    // Update the lending record with return date instead of deleting it
-                    firestore.collection("bookLendings")
-                        .document(lendingId)
-                        .update(
-                            mapOf(
-                                "returnDate" to Date(),
-                                "isReturned" to true
-                            )
-                        )
-                        .await()
+                    // Use the repository to return the book
+                    val result = firebaseRepository.returnBook(
+                        bookId = book.bookId.toString(),
+                        userId = userName,  // Use userName instead of userId
+                        lendingId = lendingId
+                    )
 
-                    Toast.makeText(requireContext(), "Book returned successfully", Toast.LENGTH_SHORT).show()
-                    
-                    // Refresh stats using the captured fragment reference
-                    StatsFragment.refreshStatsFromAnyFragment(fragment)
+                    if (result.isSuccess) {
+                        Toast.makeText(requireContext(), "Book returned successfully", Toast.LENGTH_SHORT).show()
+                        
+                        // Refresh stats using the captured fragment reference
+                        StatsFragment.refreshStatsFromAnyFragment(fragment)
+                        
+                        // Force refresh the books stats
+                        (parentFragment as? StatsFragment)?.refreshBooksStats()
+                    } else {
+                        Toast.makeText(requireContext(), "Error returning book: ${result.exceptionOrNull()?.message}", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     Toast.makeText(requireContext(), "No active lending record found", Toast.LENGTH_SHORT).show()
                 }

@@ -141,7 +141,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Total Value Section -->
+        <!-- Current Borrowings Section -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -157,19 +157,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Total Value of Borrowed Books"
+                    android:text="Current Borrowings"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/on_surface"
                     android:layout_marginBottom="16dp" />
 
-                <TextView
-                    android:id="@+id/tvTotalValue"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/llCurrentBorrowings"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="24sp"
-                    android:textColor="@color/primary"
-                    android:textStyle="bold" />
+                    android:orientation="vertical" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

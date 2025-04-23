@@ -25,6 +25,7 @@ class BooksStatsFragment : Fragment() {
     private lateinit var database: LibraryDatabase
     private val firestore = FirebaseFirestore.getInstance()
     private var isDataLoaded = false
+    private val TAG = "BooksStatsFragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,52 +99,82 @@ class BooksStatsFragment : Fragment() {
                     }
                 }
 
-                // Calculate total value of currently borrowed books
+                // Get current borrowings and calculate their values
                 val allBorrowings = firestore.collection("bookLendings")
                     .get()
                     .await()
                     .documents
 
-                Log.d("BooksStats", "Found ${allBorrowings.size} total borrowings")
-                
-                // Filter current borrowings
+                Log.d(TAG, "Total borrowings found: ${allBorrowings.size}")
+
                 val currentBorrowings = allBorrowings.filter { doc ->
+                    val bookId = doc.getLong("bookId") ?: 0L
                     val isReturned = doc.getBoolean("isReturned") ?: false
-                    Log.d("BooksStats", "Borrowing: bookId=${doc.getLong("bookId")}, isReturned=$isReturned")
-                    !isReturned
+                    val borrowDate = doc.getTimestamp("borrowDate")?.toDate()
+                    val returnDate = doc.getTimestamp("returnDate")?.toDate()
+                    val currentDate = Date()
+                    
+                    Log.d(TAG, "Checking book ID: $bookId")
+                    Log.d(TAG, "isReturned: $isReturned")
+                    Log.d(TAG, "borrowDate: $borrowDate")
+                    Log.d(TAG, "returnDate: $returnDate")
+                    
+                    // A book is currently borrowed if:
+                    // 1. It's not returned
+                    // 2. The borrow date is in the past
+                    // 3. The return date is in the future
+                    val isCurrentlyBorrowed = !isReturned && 
+                        borrowDate != null && 
+                        returnDate != null && 
+                        borrowDate.before(currentDate) && 
+                        returnDate.after(currentDate)
+                    
+                    Log.d(TAG, "Is currently borrowed: $isCurrentlyBorrowed")
+                    isCurrentlyBorrowed
                 }
 
-                Log.d("BooksStats", "Filtered to ${currentBorrowings.size} current borrowings")
+                Log.d(TAG, "Found ${currentBorrowings.size} current borrowings")
 
-                val totalValue = if (currentBorrowings.isEmpty()) {
-                    0.0
+                // Clear previous views
+                binding.llCurrentBorrowings.removeAllViews()
+
+                if (currentBorrowings.isEmpty()) {
+                    val itemBinding = ItemTopBookBinding.inflate(layoutInflater)
+                    itemBinding.tvBookTitle.text = "No books currently borrowed"
+                    itemBinding.tvBorrowCount.text = "0"
+                    binding.llCurrentBorrowings.addView(itemBinding.root)
                 } else {
-                    currentBorrowings.sumOf { lending ->
+                    currentBorrowings.forEach { lending ->
                         val bookId = lending.getLong("bookId") ?: 0L
                         val book = database.bookDao().getBookById(bookId)
-                        if (book != null) {
-                            val borrowDate = lending.getTimestamp("borrowDate")?.toDate()
-                            val returnDate = lending.getTimestamp("returnDate")?.toDate()
-                            
-                            if (borrowDate != null && returnDate != null) {
-                                val days = TimeUnit.MILLISECONDS.toDays(returnDate.time - borrowDate.time)
-                                Log.d("BooksStats", "Book found: id=$bookId, title=${book.title}, price=${book.price}, days=$days")
-                                book.price * days
-                            } else {
-                                Log.d("BooksStats", "Book found but dates are null: id=$bookId, title=${book.title}, price=${book.price}")
-                                book.price
-                            }
-                        } else {
-                            Log.d("BooksStats", "Book not found for id: $bookId")
-                            0.0
+                        val userName = lending.getString("userName") ?: "Unknown User"
+                        val borrowDate = lending.getTimestamp("borrowDate")?.toDate()
+                        val returnDate = lending.getTimestamp("returnDate")?.toDate()
+
+                        if (book != null && borrowDate != null && returnDate != null) {
+                            // Calculate days between borrow and return dates
+                            // Add 1 to include both start and end days
+                            val days = TimeUnit.MILLISECONDS.toDays(returnDate.time - borrowDate.time) + 1
+                            // Simple price calculation: price per day × number of days
+                            val totalPrice = book.price * days
+
+                            val itemBinding = ItemTopBookBinding.inflate(layoutInflater)
+                            itemBinding.tvBookTitle.text = "${book.title} (${userName})"
+                            itemBinding.tvBorrowCount.text = String.format("%.2f €", totalPrice)
+                            binding.llCurrentBorrowings.addView(itemBinding.root)
+
+                            Log.d(TAG, "Displaying book: ${book.title}")
+                            Log.d(TAG, "User: $userName")
+                            Log.d(TAG, "Days: $days")
+                            Log.d(TAG, "Price per day: ${book.price}")
+                            Log.d(TAG, "Total: $totalPrice")
                         }
                     }
                 }
 
-                Log.d("BooksStats", "Total value calculated: $totalValue")
-                binding.tvTotalValue.text = String.format("%.2f €", totalValue)
                 isDataLoaded = true
             } catch (e: Exception) {
+                Log.e(TAG, "Error loading statistics", e)
                 Toast.makeText(requireContext(), "Error loading statistics: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }

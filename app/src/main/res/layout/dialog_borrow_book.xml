@@ -20,38 +20,39 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="16dp" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilBorrowerName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:startIconDrawable="@drawable/ic_person"
-            app:startIconTint="?attr/colorPrimary"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:hint="@string/borrower_name">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <AutoCompleteTextView
                 android:id="@+id/etBorrowerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/borrower_name"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:maxLines="1" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDays"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:startIconDrawable="@drawable/ic_calendar"
-            app:startIconTint="?attr/colorPrimary"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:layout_marginBottom="24dp"
+            android:hint="@string/days_to_borrow">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDays"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/days_to_borrow"
                 android:inputType="number" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -71,19 +72,21 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancel"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel"
-                style="@style/Widget.MaterialComponents.Button.TextButton" />
+                android:textSize="16sp"
+                android:layout_marginEnd="16dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnBorrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="@string/borrow"
+                android:text="@string/borrow_book_action"
+                android:textSize="16sp"
                 app:icon="@drawable/ic_borrow"
-                style="@style/Widget.MaterialComponents.Button" />
+                app:backgroundTint="?attr/colorPrimary" />
         </LinearLayout>
 
     </LinearLayout>

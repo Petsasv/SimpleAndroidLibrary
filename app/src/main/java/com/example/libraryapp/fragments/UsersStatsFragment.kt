@@ -1,6 +1,7 @@
 package com.example.libraryapp.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ class UsersStatsFragment : Fragment() {
     private val binding get() = _binding!!
     private val firestore = FirebaseFirestore.getInstance()
     private var isDataLoaded = false
+    private val TAG = "UsersStatsFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,12 +60,19 @@ class UsersStatsFragment : Fragment() {
             try {
                 val thirtyDaysAgo = Date(System.currentTimeMillis() - 30 * 24 * 60 * 60 * 1000)
                 
-                // Get all users
-                val allUsers = firestore.collection("users").get().await().documents
-                val allUserNames = allUsers.mapNotNull { it.getString("name") }.toSet()
+                // Get all users from the users collection
+                val allUsers = firestore.collection("users")
+                    .get()
+                    .await()
+                    .documents
+                    .mapNotNull { it.getString("name") }
+                    .toSet()
                 
-                // Get users who have any activity in the last 30 days
-                val activeUsers = firestore.collection("bookLendings")
+                Log.d(TAG, "Total users found: ${allUsers.size}")
+                Log.d(TAG, "All user names: $allUsers")
+                
+                // Get all lending records from the last 30 days
+                val recentLendings = firestore.collection("bookLendings")
                     .get()
                     .await()
                     .documents
@@ -72,28 +81,44 @@ class UsersStatsFragment : Fragment() {
                         val returnDate = doc.getTimestamp("returnDate")?.toDate()
                         val isReturned = doc.getBoolean("isReturned") ?: false
                         
-                        // Consider both borrowing and returning activities
+                        // Include if:
+                        // 1. Borrowed in last 30 days
+                        // 2. Returned in last 30 days
+                        // 3. Currently borrowed (not returned)
                         (borrowDate != null && borrowDate.after(thirtyDaysAgo)) ||
-                        (isReturned && returnDate != null && returnDate.after(thirtyDaysAgo))
+                        (isReturned && returnDate != null && returnDate.after(thirtyDaysAgo)) ||
+                        (!isReturned && borrowDate != null)
                     }
+                
+                // Get active users (those with activity in last 30 days)
+                val activeUsers = recentLendings
                     .mapNotNull { it.getString("userName") }
                     .toSet()
                 
-                val activeCount = activeUsers.size
-                val inactiveCount = allUserNames.size - activeCount
+                Log.d(TAG, "Active users found: ${activeUsers.size}")
+                Log.d(TAG, "Active user names: $activeUsers")
+                
+                // Inactive users are those who haven't had any activity in the last 30 days
+                val inactiveUsers = allUsers - activeUsers
+                
+                Log.d(TAG, "Inactive users found: ${inactiveUsers.size}")
+                Log.d(TAG, "Inactive user names: $inactiveUsers")
                 
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle("User Activity (Last 30 Days)")
                     .setMessage("""
-                        Active Users: $activeCount
-                        Inactive Users: $inactiveCount
+                        Active Users: ${activeUsers.size}
+                        Inactive Users: ${inactiveUsers.size}
                         
-                        Note: Active users are those who have borrowed
-                        or returned books in the last 30 days.
+                        Note: Active users are those who have:
+                        - Borrowed a book in the last 30 days
+                        - Returned a book in the last 30 days
+                        - Currently have a book borrowed
                     """.trimIndent())
                     .setPositiveButton("OK", null)
                     .show()
             } catch (e: Exception) {
+                Log.e(TAG, "Error loading user activity", e)
                 Toast.makeText(requireContext(), "Error loading user activity: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
