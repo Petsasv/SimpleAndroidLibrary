@@ -1,10 +1,12 @@
 package com.example.libraryapp.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.libraryapp.BookDetailsActivity
 import com.example.libraryapp.data.local.entities.Book
 import com.example.libraryapp.databinding.ItemAvailableBookBinding
 
@@ -37,14 +39,21 @@ class AvailableBooksAdapter(
                 tvPrice.text = String.format("Price: %.2f €", book.price)
                 tvStatus.text = "Available" // Always show as available since this adapter only shows available books
 
-                btnBorrow.setOnClickListener {
-                    onBorrowClick(book)
+                // Function to open book details
+                val openBookDetails = {
+                    val intent = Intent(root.context, BookDetailsActivity::class.java)
+                    intent.putExtra("book", book)
+                    root.context.startActivity(intent)
                 }
+
+                // Set click listeners
+                root.setOnClickListener { openBookDetails() }
+                btnBorrow.setOnClickListener { onBorrowClick(book) }
             }
         }
     }
 
-    class BookDiffCallback : DiffUtil.ItemCallback<Book>() {
+    private class BookDiffCallback : DiffUtil.ItemCallback<Book>() {
         override fun areItemsTheSame(oldItem: Book, newItem: Book): Boolean {
             return oldItem.bookId == newItem.bookId
         }

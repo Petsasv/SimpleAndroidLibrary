@@ -1,5 +1,6 @@
 package com.example.libraryapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.libraryapp.UserDetailsActivity
 import com.example.libraryapp.adapters.UsersAdapter
 import com.example.libraryapp.data.remote.models.User
 import com.example.libraryapp.databinding.FragmentUsersBinding
@@ -44,7 +46,9 @@ class UsersFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = UsersAdapter(
             onUserClick = { user ->
-                // Handle user click if needed
+                val intent = Intent(requireContext(), UserDetailsActivity::class.java)
+                intent.putExtra("userId", user.userId)
+                startActivity(intent)
             },
             onEditClick = { user ->
                 showEditUserDialog(user)
