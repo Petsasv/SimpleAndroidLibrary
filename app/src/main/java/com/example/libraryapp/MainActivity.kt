@@ -1,10 +1,15 @@
 package com.example.libraryapp
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -26,8 +31,19 @@ import android.widget.RadioGroup
 import android.widget.Button
 import android.widget.TextView
 import android.content.Context
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.util.Log
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    companion object {
+        private var _instance: MainActivity? = null
+        val instance: MainActivity
+            get() = _instance ?: throw IllegalStateException("MainActivity not initialized")
+        const val NOTIFICATION_PERMISSION_REQUEST_CODE = 123
+    }
 
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -44,8 +60,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _instance = this
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        // Request notification permission for Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    NOTIFICATION_PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+
+        // Create notification channel
+        createNotificationChannel()
 
         // Initialize AppSettings
         appSettings = AppSettings.getInstance(this)
@@ -77,6 +112,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // Update menu item subtitles
         updateMenuSubtitles()
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "library_app_channel",
+                "Library Notifications",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Notifications for library activities"
+                enableVibration(true)
+            }
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("MainActivity", "Notification permission granted")
+            } else {
+                Log.d("MainActivity", "Notification permission denied")
+            }
+        }
     }
 
     private fun initializeNavigation() {
@@ -113,16 +179,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.nav_notifications -> {
-                // Handle notifications settings
+                toggleNotifications()
                 return true
             }
             else -> return false
         }
     }
 
+    private fun toggleNotifications() {
+        val currentState = appSettings.areNotificationsEnabled()
+        appSettings.setNotificationsEnabled(!currentState)
+        updateMenuSubtitles()
+        
+        // Show feedback to user
+        val message = if (!currentState) {
+            "Notifications enabled"
+        } else {
+            "Notifications disabled"
+        }
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun updateMenuSubtitles() {
         val themeItem = navView.menu.findItem(R.id.nav_theme)
         val languageItem = navView.menu.findItem(R.id.nav_language)
+        val notificationsItem = navView.menu.findItem(R.id.nav_notifications)
 
         // Update theme title with subtitle and chevron
         val themeView = themeItem.actionView as? TextView
@@ -146,6 +227,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 "el" -> "Greek"
                 else -> "English"
             }
+            gravity = android.view.Gravity.CENTER_VERTICAL or android.view.Gravity.END
+            setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_chevron_right, 0)
+            compoundDrawablePadding = 8
+            setPadding(0, 0, 16, 0)
+        }
+
+        // Update notifications title with subtitle and chevron
+        val notificationsView = notificationsItem.actionView as? TextView
+        notificationsView?.apply {
+            text = if (appSettings.areNotificationsEnabled()) "On" else "Off"
             gravity = android.view.Gravity.CENTER_VERTICAL or android.view.Gravity.END
             setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_chevron_right, 0)
             compoundDrawablePadding = 8
@@ -222,5 +313,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         updateMenuSubtitles()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Settings are automatically saved when changed
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Clean up resources that are not needed when app is in background
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (_instance === this) {
+            _instance = null
+        }
     }
 }

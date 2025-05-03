@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
+@Parcelize // "packaging the data to transfer between fragments"
 @Entity(tableName = "books")
 data class Book(
     @PrimaryKey(autoGenerate = true)

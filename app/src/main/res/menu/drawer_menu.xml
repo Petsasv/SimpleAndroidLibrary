@@ -25,6 +25,7 @@
             android:icon="@drawable/ic_notifications"
             android:title="@string/notifications"
             app:showAsAction="never"
+            app:actionViewClass="androidx.appcompat.widget.AppCompatTextView"
             android:iconTint="?android:attr/textColorPrimary" />
     </group>
 

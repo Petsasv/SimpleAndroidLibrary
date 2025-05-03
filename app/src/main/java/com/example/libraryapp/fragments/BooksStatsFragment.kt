@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.libraryapp.R
 import com.example.libraryapp.data.local.LibraryDatabase
 import com.example.libraryapp.databinding.FragmentBooksStatsBinding
 import com.example.libraryapp.databinding.ItemTopBookBinding

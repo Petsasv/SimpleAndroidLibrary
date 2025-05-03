@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.libraryapp.R
 import com.example.libraryapp.adapters.UsersAdapter
 import com.example.libraryapp.data.remote.models.User
 import com.example.libraryapp.databinding.FragmentUsersBinding
@@ -15,7 +14,6 @@ import com.example.libraryapp.ui.dialogs.AddUserDialog
 import com.example.libraryapp.ui.dialogs.ConfirmDeleteDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.ktx.Firebase
 
 class UsersFragment : Fragment() {
     private var _binding: FragmentUsersBinding? = null

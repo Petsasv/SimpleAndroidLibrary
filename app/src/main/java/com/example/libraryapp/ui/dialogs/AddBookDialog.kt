@@ -15,9 +15,9 @@ import com.example.libraryapp.data.local.entities.Book
 import com.example.libraryapp.data.local.entities.BranchBook
 import com.example.libraryapp.data.local.LibraryDatabase
 import com.example.libraryapp.databinding.DialogAddBookBinding
+import com.example.libraryapp.utils.NotificationHelper
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.*
 
 class AddBookDialog : DialogFragment() {
     private var _binding: DialogAddBookBinding? = null
@@ -242,6 +242,8 @@ class AddBookDialog : DialogFragment() {
                             availableQuantity = quantityInt
                         )
                     )
+                    // Send notification for new book
+                    NotificationHelper().sendNewBookAvailableNotification(book.title)
                     Toast.makeText(requireContext(), getString(R.string.book_added_successfully), Toast.LENGTH_SHORT).show()
                 }
                 dismiss()

@@ -132,4 +132,6 @@
         <item>Art and Design</item>
         <item>Music</item>
     </string-array>
+
+    <string name="default_notification_channel_id">library_app_channel</string>
 </resources>

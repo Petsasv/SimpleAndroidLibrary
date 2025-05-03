@@ -18,6 +18,7 @@ import com.example.libraryapp.data.local.entities.Book
 import com.example.libraryapp.data.remote.models.BookLending
 import com.example.libraryapp.databinding.DialogBorrowBookBinding
 import com.example.libraryapp.fragments.StatsFragment
+import com.example.libraryapp.utils.NotificationHelper
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 import kotlinx.coroutines.launch
@@ -178,6 +179,11 @@ class BorrowBookDialog(
                 // Update the book in local database - only status
                 val updatedBook = book.copy(status = "borrowed")
                 database.bookDao().updateBook(updatedBook)
+
+                // Send notification
+                lifecycleScope.launch {
+                    NotificationHelper().sendBookBorrowedNotification(borrowerName, book.title)
+                }
 
                 Toast.makeText(requireContext(), getString(R.string.book_borrowed_successfully), Toast.LENGTH_SHORT).show()
                 

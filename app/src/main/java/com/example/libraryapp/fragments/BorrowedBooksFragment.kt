@@ -16,6 +16,8 @@ import com.example.libraryapp.databinding.FragmentBorrowedBooksBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
@@ -84,28 +86,24 @@ class BorrowedBooksFragment : Fragment() {
                     .get()
                     .await()
 
-                if (lendingSnapshot.documents.isNotEmpty()) {
-                    val lendingDoc = lendingSnapshot.documents[0]
+                if (!lendingSnapshot.isEmpty) {
+                    val lendingDoc = lendingSnapshot.documents.first()
                     val lendingId = lendingDoc.id
                     val userName = lendingDoc.getString("userName") ?: "Unknown User"
 
                     // Use the repository to return the book
                     val result = firebaseRepository.returnBook(
-                        bookId = book.bookId.toString(),
-                        userId = userName,  // Use userName instead of userId
-                        lendingId = lendingId
+                        bookId = book.bookId,
+                        userName = userName
                     )
 
-                    if (result.isSuccess) {
+                    if (result) {
                         Toast.makeText(requireContext(), "Book returned successfully", Toast.LENGTH_SHORT).show()
                         
-                        // Refresh stats using the captured fragment reference
-                        StatsFragment.refreshStatsFromAnyFragment(fragment)
-                        
-                        // Force refresh the books stats
-                        (parentFragment as? StatsFragment)?.refreshBooksStats()
+                        // Refresh stats using the companion object method
+                        StatsFragment.refreshStatsFromAnyFragment(this@BorrowedBooksFragment)
                     } else {
-                        Toast.makeText(requireContext(), "Error returning book: ${result.exceptionOrNull()?.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Error returning book", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Toast.makeText(requireContext(), "No active lending record found", Toast.LENGTH_SHORT).show()
