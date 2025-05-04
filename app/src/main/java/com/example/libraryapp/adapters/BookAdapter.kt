@@ -1,10 +1,12 @@
 package com.example.libraryapp.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.libraryapp.BookDetailsActivity
 import com.example.libraryapp.data.local.entities.Book
 import com.example.libraryapp.databinding.ItemBookBinding
 
@@ -35,6 +37,13 @@ class BookAdapter(
                 tvTitle.text = book.title
                 tvAuthor.text = book.author
                 tvStatus.text = book.status
+
+                // Set click listener for the entire item
+                root.setOnClickListener {
+                    val intent = Intent(root.context, BookDetailsActivity::class.java)
+                    intent.putExtra("book", book)
+                    root.context.startActivity(intent)
+                }
 
                 btnEdit.setOnClickListener {
                     onEditClick(book)

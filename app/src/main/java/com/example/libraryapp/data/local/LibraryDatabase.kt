@@ -238,6 +238,7 @@ abstract class LibraryDatabase : RoomDatabase() {
                     MIGRATION_4_5,
                     MIGRATION_5_6
                 )
+                .fallbackToDestructiveMigration()
                 .build()
                 INSTANCE = instance
                 // Initialize default data
