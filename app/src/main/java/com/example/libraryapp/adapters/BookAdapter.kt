@@ -38,7 +38,6 @@ class BookAdapter(
                 tvAuthor.text = book.author
                 tvStatus.text = book.status
 
-                // Set click listener for the entire item
                 root.setOnClickListener {
                     val intent = Intent(root.context, BookDetailsActivity::class.java)
                     intent.putExtra("book", book)

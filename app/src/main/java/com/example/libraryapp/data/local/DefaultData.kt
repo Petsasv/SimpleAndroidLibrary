@@ -27,10 +27,8 @@ object DefaultData {
 
     fun initializeDefaultData(database: LibraryDatabase) {
         CoroutineScope(Dispatchers.IO).launch {
-            // Check if branches exist
             val existingBranches = database.branchDao().getAllBranches()
             if (existingBranches.first().isEmpty()) {
-                // Add default branches
                 defaultBranches.forEach { branch ->
                     database.branchDao().insertBranch(branch)
                 }

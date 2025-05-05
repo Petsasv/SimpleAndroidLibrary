@@ -37,16 +37,14 @@ class AvailableBooksAdapter(
                 tvAuthor.text = book.author
                 tvQuantity.text = "Quantity: ${book.quantity}"
                 tvPrice.text = String.format("Price: %.2f €", book.price)
-                tvStatus.text = "Available" // Always show as available since this adapter only shows available books
+                tvStatus.text = "Available"
 
-                // Function to open book details
                 val openBookDetails = {
                     val intent = Intent(root.context, BookDetailsActivity::class.java)
                     intent.putExtra("book", book)
                     root.context.startActivity(intent)
                 }
 
-                // Set click listeners
                 root.setOnClickListener { openBookDetails() }
                 btnBorrow.setOnClickListener { onBorrowClick(book) }
             }
